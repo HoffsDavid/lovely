@@ -1,0 +1,1148 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Demo Card Model A</title>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body,
+      #root {
+        width: 100dvw !important;
+        max-width: 100dvw !important;
+        overflow-x: hidden;
+        min-height: 100dvh;
+        margin: 0;
+      }
+      body {
+        background: linear-gradient(
+          135deg,
+          #1a0b2e 0%,
+          #16213e 50%,
+          #0f1419 100%
+        );
+        color: #f6e6ff;
+        font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu,
+          Cantarell, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji",
+          "Segoe UI Emoji";
+        background-color: #000;
+      }
+      .relationship-counter-grid {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important;
+        gap: 1rem !important;
+        width: 100% !important;
+        max-width: 28rem !important;
+        margin: 0 auto !important;
+      }
+      .relationship-counter-container {
+        margin-bottom: 6rem !important;
+        padding-bottom: 2rem !important;
+      }
+      @media (max-width: 768px) {
+        .relationship-counter-container {
+          width: 85% !important;
+          max-width: 320px !important;
+        }
+        .relationship-counter-grid {
+          gap: 0.5rem !important;
+          max-width: 100% !important;
+        }
+        .relationship-counter-container > div {
+          padding: 0.75rem !important;
+        }
+        .relationship-counter-container h3 {
+          font-size: 1.5rem !important;
+          margin-bottom: 0.75rem !important;
+        }
+        .relationship-counter-grid > div > div:first-child {
+          font-size: 2.25rem !important;
+        }
+        .relationship-counter-grid > div > div:last-child {
+          font-size: 1rem !important;
+        }
+        .relationship-counter-container > div > div:last-child {
+          font-size: 1rem !important;
+        }
+      }
+      .card-model-a {
+        box-sizing: border-box;
+        max-width: 100vw;
+        overflow-x: hidden;
+        min-height: 100%;
+        flex: 1;
+      }
+      .card-model-a h1 {
+        word-wrap: normal;
+        overflow-wrap: normal;
+        word-break: normal;
+        hyphens: none;
+        max-width: 100%;
+        line-height: 0.9;
+        margin-bottom: 1rem;
+      }
+      .card-model-a blockquote {
+        line-height: 1.2;
+      }
+      .card-model-a blockquote span {
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+        hyphens: auto;
+        max-width: 100%;
+        display: inline-block;
+      }
+      .card-model-a img {
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+      }
+      .music-player-fixed {
+        position: fixed !important;
+        bottom: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        z-index: 9999 !important;
+        width: 100% !important;
+        height: auto !important;
+        background: transparent !important;
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.5;
+        }
+      }
+      .animate-pulse {
+        animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+      }
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+      .animate-spin {
+        animation: spin 1s linear infinite;
+      }
+      .carousel-image {
+        transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+      .carousel-container:hover .carousel-image {
+        transform: scale(1.02);
+      }
+      .carousel-glow {
+        box-shadow: 0 0 30px rgba(236, 72, 153, 0.3),
+          0 0 60px rgba(147, 51, 234, 0.2), 0 0 90px rgba(99, 102, 241, 0.1);
+      }
+      .carousel-modern-border {
+        border: 3px solid transparent;
+        background: linear-gradient(var(--bg, #1a1a2e), var(--bg, #1a1a2e))
+            padding-box,
+          linear-gradient(
+              135deg,
+              rgba(236, 72, 153, 0.6),
+              rgba(147, 51, 234, 0.6),
+              rgba(99, 102, 241, 0.6)
+            )
+            border-box;
+      }
+      @keyframes shimmer {
+        0% {
+          background-position: -1000px 0;
+        }
+        100% {
+          background-position: 1000px 0;
+        }
+      }
+      .carousel-shimmer {
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.1),
+          transparent
+        );
+        background-size: 1000px 100%;
+        animation: shimmer 3s infinite;
+      }
+      .nav-button {
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4),
+          inset 0 1px 1px rgba(255, 255, 255, 0.1);
+      }
+      .nav-button:hover {
+        box-shadow: 0 12px 40px rgba(236, 72, 153, 0.4),
+          inset 0 1px 1px rgba(255, 255, 255, 0.2);
+      }
+      .indicator-dot {
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+      .indicator-dot.active {
+        width: 2rem !important;
+      }
+      .indicator-dot.active {
+        box-shadow: 0 0 20px rgba(236, 72, 153, 0.6),
+          0 0 40px rgba(147, 51, 234, 0.4);
+      }
+      .touch-none {
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        user-select: none;
+      }
+      .carousel-container {
+        -webkit-overflow-scrolling: touch;
+      }
+      @media (hover: none) and (pointer: coarse) {
+        .nav-button {
+          opacity: 1 !important;
+        }
+        .carousel-shimmer {
+          opacity: 0 !important;
+        }
+      }
+      /* Animações para abertura de presente */
+      @keyframes heartBeat {
+        0%,
+        100% {
+          transform: scale(1);
+        }
+        25% {
+          transform: scale(1.1);
+        }
+        50% {
+          transform: scale(1.05);
+        }
+        75% {
+          transform: scale(1.08);
+        }
+      }
+      @keyframes heartOpen {
+        0% {
+          transform: scale(1) rotateZ(0deg);
+        }
+        50% {
+          transform: scale(1.3) rotateZ(180deg);
+        }
+        100% {
+          transform: scale(0) rotateZ(360deg);
+          opacity: 0;
+        }
+      }
+      @keyframes ribbonFloat {
+        0%,
+        100% {
+          transform: translateY(0) rotate(-5deg);
+        }
+        50% {
+          transform: translateY(-10px) rotate(5deg);
+        }
+      }
+      @keyframes sparkle {
+        0%,
+        100% {
+          opacity: 0;
+          transform: scale(0);
+        }
+        50% {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+      @keyframes fadeInCard {
+        0% {
+          opacity: 0;
+          transform: scale(0.8);
+        }
+        100% {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+      .heart-gift {
+        animation: heartBeat 1.2s ease-in-out infinite;
+      }
+      .heart-gift.opening {
+        animation: heartOpen 1s ease-in-out forwards;
+      }
+      .heart-ribbon {
+        animation: ribbonFloat 2s ease-in-out infinite;
+      }
+      .sparkle {
+        animation: sparkle 1s ease-in-out infinite;
+      }
+      .card-reveal {
+        animation: fadeInCard 1s ease-out forwards;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+      const { useState, useEffect, useCallback, useRef, useMemo } = React;
+
+      // Ícones SVG para Play e Pause
+      const PlayIcon = ({ size = 22 }) => (
+        <svg
+          width={size}
+          height={size}
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <polygon points="5 3 19 12 5 21 5 3"></polygon>
+        </svg>
+      );
+
+      const PauseIcon = ({ size = 22 }) => (
+        <svg
+          width={size}
+          height={size}
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <rect x="6" y="4" width="4" height="16"></rect>
+          <rect x="14" y="4" width="4" height="16"></rect>
+        </svg>
+      );
+
+      // Função para filtrar fotos válidas
+      const filterValidPhotos = (list) =>
+        (list ?? []).filter((photo) => {
+          if (typeof photo !== "string") return false;
+          const trimmed = photo.trim();
+          if (!trimmed) return false;
+          const lower = trimmed.toLowerCase();
+          return (
+            !lower.includes("placeholder") && !lower.includes("placehold.co")
+          );
+        });
+
+      // Componente RelationshipCounter
+      const formatDateLocal = (dateString) => {
+        if (
+          typeof dateString === "string" &&
+          /^\d{4}-\d{2}-\d{2}$/.test(dateString)
+        ) {
+          const [year, month, day] = dateString.split("-").map(Number);
+          const localDate = new Date(year, month - 1, day);
+          return localDate.toLocaleDateString("pt-BR");
+        }
+        return new Date(dateString).toLocaleDateString("pt-BR");
+      };
+
+      function RelationshipCounter({ startDate, theme = "light" }) {
+        const [timeElapsed, setTimeElapsed] = useState({
+          years: 0,
+          months: 0,
+          days: 0,
+          hours: 0,
+          minutes: 0,
+          seconds: 0,
+        });
+
+        useEffect(() => {
+          if (!startDate) return;
+
+          const calculateTimeElapsed = () => {
+            const start = new Date(startDate);
+            const now = new Date();
+            const diff = now - start;
+
+            if (diff < 0) {
+              setTimeElapsed({
+                years: 0,
+                months: 0,
+                days: 0,
+                hours: 0,
+                minutes: 0,
+                seconds: 0,
+              });
+              return;
+            }
+
+            const years = Math.floor(diff / (1000 * 60 * 60 * 24 * 365.25));
+            const months = Math.floor(
+              (diff % (1000 * 60 * 60 * 24 * 365.25)) /
+                (1000 * 60 * 60 * 24 * 30.44)
+            );
+            const days = Math.floor(
+              (diff % (1000 * 60 * 60 * 24 * 30.44)) / (1000 * 60 * 60 * 24)
+            );
+            const hours = Math.floor(
+              (diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+            );
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+            setTimeElapsed({
+              years,
+              months,
+              days,
+              hours,
+              minutes,
+              seconds,
+            });
+          };
+
+          calculateTimeElapsed();
+          const interval = setInterval(calculateTimeElapsed, 1000);
+
+          return () => clearInterval(interval);
+        }, [startDate]);
+
+        if (!startDate) return null;
+
+        const isDark = theme === "dark";
+
+        return (
+          <div className="relationship-counter-container relative z-10 text-center mt-3 px-2 md:px-0 w-[85%] md:w-[50%] mx-auto">
+            <div
+              className={`${
+                isDark
+                  ? "bg-black/80 border-purple-500/30"
+                  : "bg-white/90 border-pink-200"
+              } backdrop-blur-sm rounded-2xl p-4 shadow-lg border`}
+            >
+              <h3
+                className={`text-2xl md:text-3xl font-bold ${
+                  isDark ? "text-pink-300" : "text-pink-600"
+                } mb-4 font-serif`}
+              >
+                💕 Tempo juntos 💕
+              </h3>
+
+              <div className="relationship-counter-grid">
+                <div className="text-center p-2">
+                  <div
+                    className={`text-4xl sm:text-5xl md:text-6xl font-bold ${
+                      isDark ? "text-pink-300" : "text-pink-600"
+                    }`}
+                  >
+                    {timeElapsed.years}
+                  </div>
+                  <div
+                    className={`text-lg sm:text-xl md:text-2xl ${
+                      isDark ? "text-gray-300" : "text-gray-600"
+                    } font-medium`}
+                  >
+                    {timeElapsed.years === 1 ? "Ano" : "Anos"}
+                  </div>
+                </div>
+
+                <div className="text-center p-2">
+                  <div
+                    className={`text-4xl sm:text-5xl md:text-6xl font-bold ${
+                      isDark ? "text-purple-300" : "text-purple-600"
+                    }`}
+                  >
+                    {timeElapsed.months}
+                  </div>
+                  <div
+                    className={`text-lg sm:text-xl md:text-2xl ${
+                      isDark ? "text-gray-300" : "text-gray-600"
+                    } font-medium`}
+                  >
+                    {timeElapsed.months === 1 ? "Mês" : "Meses"}
+                  </div>
+                </div>
+
+                <div className="text-center p-2">
+                  <div
+                    className={`text-4xl sm:text-5xl md:text-6xl font-bold ${
+                      isDark ? "text-indigo-300" : "text-indigo-600"
+                    }`}
+                  >
+                    {timeElapsed.days}
+                  </div>
+                  <div
+                    className={`text-lg sm:text-xl md:text-2xl ${
+                      isDark ? "text-gray-300" : "text-gray-600"
+                    } font-medium`}
+                  >
+                    {timeElapsed.days === 1 ? "Dia" : "Dias"}
+                  </div>
+                </div>
+
+                <div className="text-center p-2">
+                  <div
+                    className={`text-4xl sm:text-5xl md:text-6xl font-bold ${
+                      isDark ? "text-pink-400" : "text-pink-500"
+                    }`}
+                  >
+                    {timeElapsed.hours}
+                  </div>
+                  <div
+                    className={`text-lg sm:text-xl md:text-2xl ${
+                      isDark ? "text-gray-300" : "text-gray-600"
+                    } font-medium`}
+                  >
+                    {timeElapsed.hours === 1 ? "Hora" : "Horas"}
+                  </div>
+                </div>
+
+                <div className="text-center p-2">
+                  <div
+                    className={`text-4xl sm:text-5xl md:text-6xl font-bold ${
+                      isDark ? "text-purple-400" : "text-purple-500"
+                    }`}
+                  >
+                    {timeElapsed.minutes}
+                  </div>
+                  <div
+                    className={`text-lg sm:text-xl md:text-2xl ${
+                      isDark ? "text-gray-300" : "text-gray-600"
+                    } font-medium`}
+                  >
+                    {timeElapsed.minutes === 1 ? "Minuto" : "Minutos"}
+                  </div>
+                </div>
+
+                <div className="text-center p-2">
+                  <div
+                    className={`text-4xl sm:text-5xl md:text-6xl font-bold ${
+                      isDark ? "text-indigo-400" : "text-indigo-500"
+                    }`}
+                  >
+                    {timeElapsed.seconds}
+                  </div>
+                  <div
+                    className={`text-lg sm:text-xl md:text-2xl ${
+                      isDark ? "text-gray-300" : "text-gray-600"
+                    } font-medium`}
+                  >
+                    {timeElapsed.seconds === 1 ? "Segundo" : "Segundos"}
+                  </div>
+                </div>
+              </div>
+
+              <div
+                className={`mt-6 text-lg md:text-xl ${
+                  isDark ? "text-gray-300" : "text-gray-600"
+                } font-medium`}
+              >
+                Desde {formatDateLocal(startDate)}
+              </div>
+            </div>
+          </div>
+        );
+      }
+
+      // Componente DarkMusicPlayer
+      function DarkMusicPlayer({ track }) {
+        const audioRef = useRef(null);
+        const [isPlaying, setIsPlaying] = useState(false);
+
+        const togglePlay = () => {
+          if (!audioRef.current) return;
+          if (isPlaying) {
+            audioRef.current.pause();
+          } else {
+            audioRef.current.play();
+          }
+          setIsPlaying(!isPlaying);
+        };
+
+        return (
+          <div
+            className="w-full max-w-md md:max-w-xl lg:max-w-2xl xl:max-w-3xl mx-auto bg-gradient-to-br from-gray-900/35 via-black/30 to-gray-900/35 backdrop-blur-md rounded-xl p-4 md:p-6 lg:p-7 xl:p-9 shadow-2xl border border-purple-500/20 relative overflow-hidden dark-player"
+            style={{
+              backdropFilter: "blur(12px)",
+              WebkitBackdropFilter: "blur(12px)",
+            }}
+          >
+            <div className="absolute top-0 right-0 w-16 h-16 bg-gradient-to-br from-purple-600/15 to-pink-600/15 rounded-full -translate-y-8 translate-x-8 blur-xl"></div>
+            <div className="absolute bottom-0 left-0 w-12 h-12 bg-gradient-to-tr from-indigo-600/15 to-pink-600/15 rounded-full translate-y-6 -translate-x-6 blur-xl"></div>
+            <div className="absolute inset-0 bg-gradient-to-t from-purple-900/5 to-transparent"></div>
+
+            <div className="relative z-10 flex items-center gap-3">
+              <div className="relative">
+                <img
+                  src={track.album?.cover_small}
+                  alt={track.title}
+                  className="w-12 h-12 md:w-16 md:h-16 lg:w-20 lg:h-20 rounded-lg shadow-2xl border-2 border-purple-500/40 ring-1 ring-purple-500/20"
+                />
+                <div className="absolute inset-0 rounded-lg bg-gradient-to-br from-pink-500/10 to-purple-500/10"></div>
+                {isPlaying && (
+                  <div className="absolute inset-0 rounded-lg bg-gradient-to-br from-pink-500/20 to-purple-500/20 animate-pulse"></div>
+                )}
+              </div>
+
+              <div className="flex-1 min-w-0">
+                <p className="font-bold text-pink-200 text-sm md:text-base lg:text-lg font-serif truncate drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]">
+                  {track.title}
+                </p>
+                <p className="text-xs md:text-sm lg:text-base text-gray-400 font-medium truncate mt-0.5">
+                  {track.artist.name}
+                </p>
+              </div>
+
+              <button
+                onClick={togglePlay}
+                className="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 active:from-pink-700 active:to-purple-800 shadow-lg shadow-pink-500/30 transition-all duration-300 transform hover:scale-110 active:scale-95 ring-2 ring-purple-500/30 hover:ring-purple-500/50 rounded-full w-10 h-10 md:w-12 md:h-12 lg:w-14 lg:h-14 flex items-center justify-center"
+              >
+                {isPlaying ? <PauseIcon size={22} /> : <PlayIcon size={22} />}
+              </button>
+            </div>
+
+            <audio ref={audioRef} src={track.preview}></audio>
+          </div>
+        );
+      }
+
+      // Componente MeteorHearts
+      function MeteorHearts() {
+        const [hearts, setHearts] = useState([]);
+        const heartIdRef = useRef(0);
+        const containerRef = useRef(null);
+        const heartsRef = useRef([]);
+        const animationFrameRef = useRef(null);
+
+        useEffect(() => {
+          const heartEmojis = [
+            "💕",
+            "💖",
+            "💗",
+            "💘",
+            "💝",
+            "💞",
+            "❤️",
+            "💜",
+            "🤍",
+          ];
+
+          const createHeart = (initialY = null) => {
+            const id = heartIdRef.current++;
+            const x = Math.random() * 100;
+            const size = Math.random() * 20 + 15;
+            const speed = Math.random() * 0.07 + 0.05;
+            const startTime = Date.now();
+            const containerHeight =
+              containerRef.current?.clientHeight || window.innerHeight;
+
+            return {
+              id,
+              x,
+              size,
+              speed,
+              startTime,
+              startY: initialY !== null ? initialY : -100,
+              containerHeight,
+              emoji:
+                heartEmojis[Math.floor(Math.random() * heartEmojis.length)],
+              color: Math.random() > 0.5 ? "text-purple-700" : "text-red-700",
+            };
+          };
+
+          // Criar corações iniciais distribuídos pela tela
+          const containerHeight =
+            containerRef.current?.clientHeight || window.innerHeight;
+          const initialHearts = [];
+          const initialCount = 15; // Número de corações iniciais
+
+          for (let i = 0; i < initialCount; i++) {
+            const initialY = Math.random() * containerHeight;
+            initialHearts.push(createHeart(initialY));
+          }
+
+          heartsRef.current = initialHearts;
+          setHearts([...heartsRef.current]);
+
+          const createInterval = setInterval(() => {
+            const count = Math.floor(Math.random() * 2) + 1;
+            const newHearts = Array.from({ length: count }, () =>
+              createHeart()
+            );
+
+            heartsRef.current = [...heartsRef.current, ...newHearts].slice(-80);
+            setHearts([...heartsRef.current]);
+          }, 1500);
+
+          const animate = () => {
+            const now = Date.now();
+            const containerHeight =
+              containerRef.current?.clientHeight || window.innerHeight;
+
+            heartsRef.current = heartsRef.current
+              .map((heart) => {
+                const elapsed = (now - heart.startTime) / 1000;
+                const heartContainerHeight =
+                  heart.containerHeight || containerHeight;
+                const y =
+                  heart.startY + elapsed * heart.speed * heartContainerHeight;
+
+                if (y > heartContainerHeight + 50) {
+                  return null;
+                }
+
+                let opacity = 1;
+                if (y < 0) {
+                  opacity = 1;
+                } else if (y > heartContainerHeight - 50) {
+                  opacity = Math.max(0, (heartContainerHeight - y) / 50);
+                }
+
+                return {
+                  ...heart,
+                  currentY: y,
+                  opacity: opacity,
+                };
+              })
+              .filter(Boolean);
+
+            setHearts([...heartsRef.current]);
+            animationFrameRef.current = requestAnimationFrame(animate);
+          };
+
+          animationFrameRef.current = requestAnimationFrame(animate);
+
+          return () => {
+            clearInterval(createInterval);
+            if (animationFrameRef.current) {
+              cancelAnimationFrame(animationFrameRef.current);
+            }
+          };
+        }, []);
+
+        return (
+          <div
+            ref={containerRef}
+            className="absolute inset-0 pointer-events-none overflow-hidden z-0"
+          >
+            {hearts.map((heart) => (
+              <div
+                key={heart.id}
+                className={`absolute ${heart.color}`}
+                style={{
+                  left: `${heart.x}%`,
+                  transform: `translateY(${heart.currentY || heart.startY}px)`,
+                  fontSize: `${heart.size}px`,
+                  opacity: heart.opacity !== undefined ? heart.opacity : 1,
+                  willChange: "transform",
+                  backfaceVisibility: "hidden",
+                  WebkitBackfaceVisibility: "hidden",
+                }}
+              >
+                {heart.emoji}
+              </div>
+            ))}
+          </div>
+        );
+      }
+
+      // Componente CardModelA
+      function CardModelA({
+        name,
+        message,
+        photos,
+        music,
+        startDate,
+        showMusicPlayer = true,
+      }) {
+        const validPhotos = useMemo(() => filterValidPhotos(photos), [photos]);
+        const [current, setCurrent] = useState(0);
+        const [isAutoPlaying, setIsAutoPlaying] = useState(true);
+        const intervalRef = useRef(null);
+        const cardContainerRef = useRef(null);
+        const overlayRef = useRef(null);
+        const touchStartX = useRef(0);
+        const touchEndX = useRef(0);
+        const carouselRef = useRef(null);
+        const isDraggingRef = useRef(false);
+        const [isDragging, setIsDragging] = useState(false);
+        const [dragOffset, setDragOffset] = useState(0);
+
+        const next = useCallback(
+          () => setCurrent((c) => (c + 1) % validPhotos.length),
+          [validPhotos.length]
+        );
+        const prev = useCallback(
+          () =>
+            setCurrent(
+              (c) => (c - 1 + validPhotos.length) % validPhotos.length
+            ),
+          [validPhotos.length]
+        );
+
+        useEffect(() => {
+          if (validPhotos.length === 0 && current !== 0) {
+            setCurrent(0);
+          } else if (validPhotos.length > 0 && current >= validPhotos.length) {
+            setCurrent(0);
+          }
+        }, [validPhotos.length, current]);
+
+        const goToSlide = (index) => {
+          setCurrent(index);
+          resetAutoPlay();
+        };
+
+        const resetAutoPlay = () => {
+          setIsAutoPlaying(false);
+          if (intervalRef.current) {
+            clearInterval(intervalRef.current);
+          }
+          setTimeout(() => {
+            setIsAutoPlaying(true);
+          }, 3000);
+        };
+
+        useEffect(() => {
+          if (validPhotos.length > 1 && isAutoPlaying) {
+            intervalRef.current = setInterval(() => {
+              setCurrent((c) => (c + 1) % validPhotos.length);
+            }, 4000);
+          }
+
+          return () => {
+            if (intervalRef.current) {
+              clearInterval(intervalRef.current);
+            }
+          };
+        }, [validPhotos.length, isAutoPlaying]);
+
+        const handleMouseEnter = () => {
+          setIsAutoPlaying(false);
+          if (intervalRef.current) {
+            clearInterval(intervalRef.current);
+          }
+        };
+
+        const handleMouseLeave = () => {
+          setIsAutoPlaying(true);
+        };
+
+        // Handlers para swipe mobile
+        const handleTouchStart = (e) => {
+          touchStartX.current = e.touches[0].clientX;
+          touchEndX.current = e.touches[0].clientX;
+          isDraggingRef.current = true;
+          setIsDragging(true);
+          setIsAutoPlaying(false);
+          setDragOffset(0);
+          if (intervalRef.current) {
+            clearInterval(intervalRef.current);
+          }
+        };
+
+        const handleTouchMove = (e) => {
+          if (!isDraggingRef.current) return;
+          touchEndX.current = e.touches[0].clientX;
+          const diff = touchStartX.current - touchEndX.current;
+          // Limitar o arrasto para não ultrapassar os limites
+          const maxDrag = carouselRef.current?.clientWidth || 0;
+          const limitedDiff = Math.max(
+            -maxDrag * 0.3,
+            Math.min(maxDrag * 0.3, diff)
+          );
+          setDragOffset(-limitedDiff);
+          // Prevenir scroll da página durante o swipe
+          if (Math.abs(diff) > 10) {
+            e.preventDefault();
+          }
+        };
+
+        const handleTouchEnd = () => {
+          if (!isDraggingRef.current) return;
+          isDraggingRef.current = false;
+          setIsDragging(false);
+
+          const diff = touchStartX.current - touchEndX.current;
+          const minSwipeDistance = 50; // Distância mínima para considerar um swipe
+
+          if (Math.abs(diff) > minSwipeDistance) {
+            if (diff > 0) {
+              // Swipe para a esquerda - próxima foto
+              next();
+            } else {
+              // Swipe para a direita - foto anterior
+              prev();
+            }
+          }
+
+          setDragOffset(0);
+
+          // Reiniciar auto-play após 3 segundos
+          setTimeout(() => {
+            setIsAutoPlaying(true);
+          }, 3000);
+        };
+
+        useEffect(() => {
+          const updateOverlayHeight = () => {
+            if (cardContainerRef.current && overlayRef.current) {
+              const height = cardContainerRef.current.scrollHeight;
+              overlayRef.current.style.height = `${height}px`;
+            }
+          };
+
+          updateOverlayHeight();
+          window.addEventListener("resize", updateOverlayHeight);
+
+          const observer = new ResizeObserver(updateOverlayHeight);
+          if (cardContainerRef.current) {
+            observer.observe(cardContainerRef.current);
+          }
+
+          return () => {
+            window.removeEventListener("resize", updateOverlayHeight);
+            observer.disconnect();
+          };
+        }, [name, message, validPhotos.length, startDate]);
+
+        return (
+          <>
+            <div
+              ref={cardContainerRef}
+              className="card-model-a rounded-none md:rounded-3xl p-4 md:p-8 space-y-[1.1rem] md:space-y-[1.65rem] bg-gradient-to-br from-black via-gray-900 to-purple-900 shadow-2xl border-0 md:border border-purple-500/30 backdrop-blur-sm flex flex-col justify-start pt-8 md:pt-12 pb-5 relative"
+            >
+              <div
+                ref={overlayRef}
+                className="absolute top-0 left-0 right-0 bg-black/40 z-10 pointer-events-none"
+              ></div>
+
+              {name && (
+                <div className="relative z-20 text-center px-4 md:px-0 mt-8">
+                  <div className="inline-block overflow-hidden mx-auto w-[95dvw] max-w-full">
+                    <h1 className="font-black text-4xl text-pink-300 mb-3 font-serif italic tracking-wide whitespace-normal leading-tight px-2">
+                      {name}
+                    </h1>
+                    <div className="h-1 w-16 md:w-20 bg-gradient-to-r from-pink-300 to-purple-300 mx-auto rounded-full"></div>
+                  </div>
+                </div>
+              )}
+
+              {validPhotos.length > 0 && (
+                <div
+                  className="relative z-20 w-[70dvw] md:w-[35%] max-w-full mx-auto px-4 md:px-0 mt-3 carrosel"
+                  onMouseEnter={handleMouseEnter}
+                  onMouseLeave={handleMouseLeave}
+                >
+                  <div className="relative overflow-hidden rounded-3xl carousel-glow border-2 border-white/30 group carousel-container shadow-2xl">
+                    {/* Frame interno com gradiente sutil */}
+                    <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-pink-500/10 via-purple-500/10 to-indigo-500/10 pointer-events-none z-10"></div>
+
+                    {/* Efeito shimmer */}
+                    <div className="absolute inset-0 rounded-3xl carousel-shimmer pointer-events-none z-20 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+
+                    <div
+                      className="relative w-full aspect-[9/16] overflow-hidden rounded-3xl touch-none"
+                      ref={carouselRef}
+                      onTouchStart={handleTouchStart}
+                      onTouchMove={handleTouchMove}
+                      onTouchEnd={handleTouchEnd}
+                      style={{ touchAction: "pan-x" }}
+                    >
+                      <div
+                        className="flex h-full"
+                        style={{
+                          transform: `translateX(calc(-${
+                            current * 100
+                          }% + ${dragOffset}px))`,
+                          transition: isDragging
+                            ? "none"
+                            : "transform 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
+                        }}
+                      >
+                        {validPhotos.map((photo, index) => (
+                          <div
+                            key={index}
+                            className="w-full flex-shrink-0 h-full"
+                          >
+                            <img
+                              src={photo}
+                              alt={`foto-${index}`}
+                              className="w-full h-full object-cover aspect-[9/16] carousel-image"
+                              style={{ transform: "scale(1)" }}
+                            />
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Overlay gradiente mais sofisticado */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-black/10 rounded-3xl pointer-events-none z-10"></div>
+                    <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-pink-900/5 rounded-3xl pointer-events-none z-10"></div>
+
+                    {/* Botões de navegação modernos */}
+                    <button
+                      onClick={prev}
+                      className="nav-button absolute left-5 top-1/2 -translate-y-1/2 bg-gradient-to-r from-pink-500/80 via-purple-500/80 to-indigo-500/80 hover:from-pink-600/90 hover:via-purple-600/90 hover:to-indigo-600/90 text-white px-5 py-3 rounded-full transition-all duration-300 font-bold text-xl opacity-0 group-hover:opacity-100 z-30 transform hover:scale-110 hover:-translate-x-1 active:scale-95"
+                    >
+                      <span className="drop-shadow-lg">‹</span>
+                    </button>
+
+                    <button
+                      onClick={next}
+                      className="nav-button absolute right-5 top-1/2 -translate-y-1/2 bg-gradient-to-r from-pink-500/80 via-purple-500/80 to-indigo-500/80 hover:from-pink-600/90 hover:via-purple-600/90 hover:to-indigo-600/90 text-white px-5 py-3 rounded-full transition-all duration-300 font-bold text-xl opacity-0 group-hover:opacity-100 z-30 transform hover:scale-110 hover:translate-x-1 active:scale-95"
+                    >
+                      <span className="drop-shadow-lg">›</span>
+                    </button>
+                  </div>
+
+                  {/* Indicadores modernos */}
+                  <div className="flex justify-center mt-10 gap-2">
+                    {validPhotos.map((_, i) => (
+                      <button
+                        key={i}
+                        onClick={() => goToSlide(i)}
+                        className={`indicator-dot relative rounded-full transition-all duration-400 ${
+                          i === current
+                            ? "bg-gradient-to-r from-pink-400 via-purple-400 to-indigo-400 scale-125 indicator-dot active w-8 h-3"
+                            : "bg-gray-600/60 hover:bg-gray-500/80 hover:scale-110 w-3 h-3"
+                        }`}
+                      >
+                        {i === current && isAutoPlaying && (
+                          <div
+                            className="absolute inset-0 rounded-full border-2 border-pink-300/60 animate-spin"
+                            style={{ animationDuration: "4s" }}
+                          ></div>
+                        )}
+                        {i === current && (
+                          <div className="absolute inset-0 rounded-full bg-gradient-to-r from-pink-400/40 via-purple-400/40 to-indigo-400/40 animate-pulse"></div>
+                        )}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {message && (
+                <blockquote className="relative z-20 text-center text-xl sm:text-2xl md:text-3xl lg:text-2xl text-gray-100 leading-relaxed font-serif italic mt-3 px-4 md:px-0 w-[90%] md:w-[40%] self-center message-box">
+                  <div className="relative">
+                    <span className="text-3xl sm:text-3xl md:text-4xl lg:text-5xl text-pink-300/80 absolute left-0 sm:left-0 md:-left-1 -top-4 sm:-top-6 font-serif">
+                      "
+                    </span>
+                    <span className="relative z-20 font-light tracking-wide hyphens-auto">
+                      {message}
+                    </span>
+                    <span className="text-3xl sm:text-3xl md:text-4xl lg:text-5xl text-pink-300/80 absolute right-0 sm:right-0 md:-right-1 -bottom-4 sm:-bottom-6 font-serif">
+                      "
+                    </span>
+                  </div>
+                </blockquote>
+              )}
+
+              {startDate && (
+                <div className="mt-3 relative z-20">
+                  <RelationshipCounter startDate={startDate} theme="dark" />
+                </div>
+              )}
+
+              <MeteorHearts />
+            </div>
+
+            {music && showMusicPlayer && (
+              <div className="max-w-md mx-auto music-player-fixed p-4 bg-gradient-to-t from-black/95 via-gray-900/90 to-transparent">
+                <DarkMusicPlayer track={music} />
+              </div>
+            )}
+          </>
+        );
+      }
+
+      // Dados de exemplo
+      const demoData = {
+        name: "Ana & João",
+        message:
+          "Juntos construindo sonhos e memórias para toda a vida. Cada momento ao seu lado é uma nova descoberta do amor.",
+        photos: [
+          "https://images.unsplash.com/photo-1519741497674-611481863552?w=400&h=600&fit=crop",
+          "https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=400&h=600&fit=crop",
+          "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=400&h=600&fit=crop",
+          "https://images.unsplash.com/photo-1522673607200-164d1b6ce486?w=400&h=600&fit=crop",
+        ],
+        music: {
+          id: 3135556,
+          title: "Perfect",
+          artist: {
+            name: "Ed Sheeran",
+          },
+          album: {
+            cover_small:
+              "https://e-cdns-images.dzcdn.net/images/cover/2e018122cb56986277102d2041a592c8/56x56-000000-80-0-0.jpg",
+          },
+          preview:
+            "https://cdns-preview-8.dzcdn.net/stream/c-8f34f35c83c61ee3915f62d24ceb1f31-2.mp3",
+        },
+        startDate: "2020-03-14",
+        showMusicPlayer: true,
+      };
+
+      // Componente de Abertura de Presente
+      function GiftOpeningScreen({ onOpen }) {
+        const [isOpening, setIsOpening] = useState(false);
+
+        const handleOpen = () => {
+          if (isOpening) return;
+          setIsOpening(true);
+          setTimeout(() => {
+            onOpen();
+          }, 500);
+        };
+
+        return (
+          <div
+            className={`min-h-screen bg-gradient-to-br from-black via-gray-900 to-purple-900 flex items-center justify-center transition-opacity duration-500 ${
+              isOpening ? "opacity-0" : "opacity-100"
+            }`}
+            onClick={handleOpen}
+            style={{ cursor: isOpening ? "default" : "pointer" }}
+          >
+            <div className="text-center px-4">
+              <div className="mb-8">
+                <h2 className="text-3xl md:text-4xl font-bold text-pink-300 mb-4 font-serif">
+                  Você tem um presente! 💝
+                </h2>
+                <p className="text-gray-300 text-lg md:text-xl mb-8">
+                  Toque para abrir
+                </p>
+              </div>
+
+              <div className="text-9xl md:text-[12rem] animate-pulse">💝</div>
+
+              <div className="mt-8 text-gray-400 text-sm md:text-base">
+                👆 Toque em qualquer lugar
+              </div>
+            </div>
+          </div>
+        );
+      }
+
+      // Componente Demo
+      function Demo() {
+        const [isGiftOpened, setIsGiftOpened] = useState(false);
+
+        if (!isGiftOpened) {
+          return <GiftOpeningScreen onOpen={() => setIsGiftOpened(true)} />;
+        }
+
+        return (
+          <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-purple-900">
+            <CardModelA {...demoData} />
+          </div>
+        );
+      }
+
+      // Renderizar
+      const root = ReactDOM.createRoot(document.getElementById("root"));
+      root.render(<Demo />);
+    </script>
+  </body>
+</html>
