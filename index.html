@@ -8,6 +8,28 @@
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      // Configuração do Tailwind CSS - Edite aqui para personalizar
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              // Adicione suas cores customizadas aqui
+              // Exemplo: 'minha-cor': '#FF5733',
+            },
+            spacing: {
+              // Adicione espaçamentos customizados aqui
+              // Exemplo: '128': '32rem',
+            },
+            fontFamily: {
+              // Adicione fontes customizadas aqui
+              // Exemplo: 'custom': ['Nome da Fonte', 'sans-serif'],
+            },
+            // Outras personalizações podem ser adicionadas aqui
+          },
+        },
+      };
+    </script>
     <style>
       * {
         box-sizing: border-box;
@@ -90,6 +112,10 @@
       }
       .card-model-a blockquote {
         line-height: 1.2;
+      }
+      .message-box {
+        margin-top: 50px !important;
+        margin-bottom: 50px !important;
       }
       .card-model-a blockquote span {
         word-wrap: break-word;
@@ -979,21 +1005,6 @@
                     {/* Overlay gradiente mais sofisticado */}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-black/10 rounded-3xl pointer-events-none z-10"></div>
                     <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-pink-900/5 rounded-3xl pointer-events-none z-10"></div>
-
-                    {/* Botões de navegação modernos */}
-                    <button
-                      onClick={prev}
-                      className="nav-button absolute left-5 top-1/2 -translate-y-1/2 bg-gradient-to-r from-pink-500/80 via-purple-500/80 to-indigo-500/80 hover:from-pink-600/90 hover:via-purple-600/90 hover:to-indigo-600/90 text-white px-5 py-3 rounded-full transition-all duration-300 font-bold text-xl opacity-0 group-hover:opacity-100 z-30 transform hover:scale-110 hover:-translate-x-1 active:scale-95"
-                    >
-                      <span className="drop-shadow-lg">‹</span>
-                    </button>
-
-                    <button
-                      onClick={next}
-                      className="nav-button absolute right-5 top-1/2 -translate-y-1/2 bg-gradient-to-r from-pink-500/80 via-purple-500/80 to-indigo-500/80 hover:from-pink-600/90 hover:via-purple-600/90 hover:to-indigo-600/90 text-white px-5 py-3 rounded-full transition-all duration-300 font-bold text-xl opacity-0 group-hover:opacity-100 z-30 transform hover:scale-110 hover:translate-x-1 active:scale-95"
-                    >
-                      <span className="drop-shadow-lg">›</span>
-                    </button>
                   </div>
 
                   {/* Indicadores modernos */}
@@ -1024,12 +1035,15 @@
               )}
 
               {message && (
-                <blockquote className="relative z-20 text-center text-xl sm:text-2xl md:text-3xl lg:text-2xl text-gray-100 leading-relaxed font-serif italic mt-3 px-4 md:px-0 w-[90%] md:w-[40%] self-center message-box">
+                <blockquote
+                  className="relative z-20 text-center text-xl sm:text-2xl md:text-3xl lg:text-2xl text-gray-100 leading-relaxed font-serif italic px-4 md:px-0 w-[90%] md:w-[40%] self-center message-box"
+                  style={{ marginTop: "50px", marginBottom: "50px" }}
+                >
                   <div className="relative">
                     <span className="text-3xl sm:text-3xl md:text-4xl lg:text-5xl text-pink-300/80 absolute left-0 sm:left-0 md:-left-1 -top-4 sm:-top-6 font-serif">
                       "
                     </span>
-                    <span className="relative z-20 font-light tracking-wide hyphens-auto">
+                    <span className=" relative z-20 font-light tracking-wide hyphens-auto">
                       {message}
                     </span>
                     <span className="text-3xl sm:text-3xl md:text-4xl lg:text-5xl text-pink-300/80 absolute right-0 sm:right-0 md:-right-1 -bottom-4 sm:-bottom-6 font-serif">
