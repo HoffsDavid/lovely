@@ -476,17 +476,59 @@
           );
         });
 
+      // Hook para detectar quando elemento aparece na tela
+      function useIntersectionObserver(ref, options = {}) {
+        const [isIntersecting, setIsIntersecting] = useState(false);
+        const [hasIntersected, setHasIntersected] = useState(false);
+
+        useEffect(() => {
+          const element = ref.current;
+          if (!element) return;
+
+          const observer = new IntersectionObserver(
+            ([entry]) => {
+              if (entry.isIntersecting) {
+                setIsIntersecting(true);
+                setHasIntersected(true);
+              } else {
+                setIsIntersecting(false);
+              }
+            },
+            {
+              threshold: options.threshold || 0.1,
+              rootMargin: options.rootMargin || "0px",
+              ...options,
+            }
+          );
+
+          observer.observe(element);
+
+          return () => {
+            observer.disconnect();
+          };
+        }, [ref, options]);
+
+        return { isIntersecting, hasIntersected };
+      }
+
       // Componente TypingText - Animação de digitar e apagar
       function TypingText({ texts, className = "" }) {
         const [displayText, setDisplayText] = useState("");
         const [textIndex, setTextIndex] = useState(0);
         const [charIndex, setCharIndex] = useState(0);
         const [isDeleting, setIsDeleting] = useState(false);
+        const textRef = useRef(null);
+        const { hasIntersected } = useIntersectionObserver(textRef, {
+          threshold: 0.3, // Começa quando 30% do elemento está visível
+        });
         const typingSpeed = 100;
         const deletingSpeed = 50;
         const pauseTime = 2000;
 
         useEffect(() => {
+          // Só inicia a animação quando o elemento aparecer na tela
+          if (!hasIntersected) return;
+
           let timeout;
           const currentText = texts[textIndex];
 
@@ -516,10 +558,10 @@
           }
 
           return () => clearTimeout(timeout);
-        }, [charIndex, isDeleting, textIndex, texts]);
+        }, [charIndex, isDeleting, textIndex, texts, hasIntersected]);
 
         return (
-          <span className={className}>
+          <span ref={textRef} className={className}>
             {displayText}
             <span className="inline-block w-0.5 h-4 bg-purple-300 ml-1 cursor-blink" />
           </span>
