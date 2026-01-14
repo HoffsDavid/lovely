@@ -358,6 +358,26 @@
           transform: scale(1.2);
         }
       }
+      @keyframes cursorBlink {
+        0% {
+          opacity: 1;
+        }
+        49% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0;
+        }
+        99% {
+          opacity: 0;
+        }
+        100% {
+          opacity: 1;
+        }
+      }
+      .cursor-blink {
+        animation: cursorBlink 1.5s linear infinite;
+      }
       @keyframes fadeInScreen {
         0% {
           opacity: 0;
@@ -455,6 +475,56 @@
             !lower.includes("placeholder") && !lower.includes("placehold.co")
           );
         });
+
+      // Componente TypingText - Animação de digitar e apagar
+      function TypingText({ texts, className = "" }) {
+        const [displayText, setDisplayText] = useState("");
+        const [textIndex, setTextIndex] = useState(0);
+        const [charIndex, setCharIndex] = useState(0);
+        const [isDeleting, setIsDeleting] = useState(false);
+        const typingSpeed = 100;
+        const deletingSpeed = 50;
+        const pauseTime = 2000;
+
+        useEffect(() => {
+          let timeout;
+          const currentText = texts[textIndex];
+
+          if (!isDeleting && charIndex < currentText.length) {
+            // Digitando
+            timeout = setTimeout(() => {
+              setDisplayText(currentText.substring(0, charIndex + 1));
+              setCharIndex(charIndex + 1);
+            }, typingSpeed);
+          } else if (isDeleting && charIndex > 0) {
+            // Apagando
+            timeout = setTimeout(() => {
+              setDisplayText(currentText.substring(0, charIndex - 1));
+              setCharIndex(charIndex - 1);
+            }, deletingSpeed);
+          } else if (!isDeleting && charIndex === currentText.length) {
+            // Texto completo, pausa antes de apagar
+            timeout = setTimeout(() => {
+              setIsDeleting(true);
+            }, pauseTime);
+          } else if (isDeleting && charIndex === 0) {
+            // Texto apagado, move para o próximo
+            timeout = setTimeout(() => {
+              setIsDeleting(false);
+              setTextIndex((textIndex + 1) % texts.length);
+            }, 500);
+          }
+
+          return () => clearTimeout(timeout);
+        }, [charIndex, isDeleting, textIndex, texts]);
+
+        return (
+          <span className={className}>
+            {displayText}
+            <span className="inline-block w-0.5 h-4 bg-purple-300 ml-1 cursor-blink" />
+          </span>
+        );
+      }
 
       // Componente RelationshipCounter
       const formatDateLocal = (dateString) => {
@@ -1126,8 +1196,13 @@
                   <RelationshipCounter startDate={startDate} theme="dark" />
                   <div className="text-center -mt-20 px-4">
                     <p className="text-gray-200 text-lg md:text-xl font-serif italic">
-                      Seu amor foi sempre muito mais do que eu sonhei pra mim!{" "}
-                      <span className="text-purple-300">❤️</span>
+                      <TypingText
+                        texts={[
+                          "Se o amor bateu na nossa porta...",
+                          "que sorte a nossa! ",
+                        ]}
+                        className="text-gray-200"
+                      />
                     </p>
                   </div>
                 </div>
