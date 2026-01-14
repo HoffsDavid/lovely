@@ -6,6 +6,11 @@
       name="viewport"
       content="width=device-width, initial-scale=1.0, viewport-fit=cover"
     />
+    <meta
+      name="apple-mobile-web-app-status-bar-style"
+      content="black-translucent"
+    />
+    <meta name="theme-color" content="transparent" />
     <title>Lowlify</title>
     <link rel="icon" type="image/png" href="img/icon.png" />
     <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
@@ -39,37 +44,57 @@
         box-sizing: border-box;
       }
       html {
+        width: 100%;
         height: 100%;
-      }
-      html,
-      body,
-      #root {
-        width: 100dvw !important;
-        max-width: 100dvw !important;
         overflow-x: hidden;
-        min-height: 100%;
-        margin: 0;
-        padding: 0;
+        background: transparent;
       }
       body {
         margin: 0;
         padding: 0;
-        min-height: 100%;
+        width: 100%;
+        min-height: calc(var(--vh, 1vh) * 100);
+        min-height: -webkit-fill-available;
+        position: relative;
+        overflow-x: hidden;
+        color: #f6e6ff;
+        font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu,
+          Cantarell, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji",
+          "Segoe UI Emoji";
         background: linear-gradient(
           135deg,
           #0a0515 0%,
           #0d0a1a 50%,
           #050510 100%
         );
-        color: #f6e6ff;
-        font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu,
-          Cantarell, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji",
-          "Segoe UI Emoji";
         background-color: #000;
       }
-      #root {
-        height: 100%;
+      body::after {
+        content: "";
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        bottom: env(safe-area-inset-bottom);
+        z-index: -9999;
+        background: linear-gradient(
+          135deg,
+          #0a0515 0%,
+          #0d0a1a 50%,
+          #050510 100%
+        );
+        background-color: #000;
+        pointer-events: none;
       }
+      #root {
+        width: 100%;
+        min-height: calc(var(--vh, 1vh) * 100);
+        min-height: -webkit-fill-available;
+        background: transparent;
+        position: relative;
+      }
+
       .relationship-counter-grid {
         display: grid !important;
         grid-template-columns: 1fr 1fr !important;
@@ -115,6 +140,7 @@
         min-height: 100%;
         flex: 1;
       }
+
       .card-model-a h1 {
         word-wrap: normal;
         overflow-wrap: normal;
@@ -128,8 +154,8 @@
         line-height: 1.2;
       }
       .message-box {
-        margin-top: 50px !important;
-        margin-bottom: 50px !important;
+        margin-top: 90px !important;
+        margin-bottom: 10px !important;
       }
       .card-model-a blockquote span {
         word-wrap: break-word;
@@ -154,12 +180,13 @@
       }
       .music-player-fixed {
         position: fixed !important;
-        bottom: 0 !important;
+        bottom: env(safe-area-inset-bottom, 0) !important;
         left: 0 !important;
         right: 0 !important;
         z-index: 9999 !important;
         width: 100% !important;
         height: auto !important;
+        padding-bottom: max(env(safe-area-inset-bottom, 0), 1rem) !important;
         background: transparent !important;
       }
       @keyframes pulse {
@@ -316,6 +343,34 @@
           transform: scale(1);
         }
       }
+
+      .baixo {
+        margin-bottom: 30px !important;
+      }
+      @keyframes twinkle {
+        0%,
+        100% {
+          opacity: 0.1;
+          transform: scale(0.8);
+        }
+        50% {
+          opacity: 0.4;
+          transform: scale(1.2);
+        }
+      }
+      @keyframes fadeInScreen {
+        0% {
+          opacity: 0;
+          transform: scale(1.02);
+        }
+        100% {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+      .animate-fadeIn {
+        animation: fadeInScreen 0.6s ease-out forwards;
+      }
       .heart-gift {
         animation: heartBeat 1.2s ease-in-out infinite;
       }
@@ -336,6 +391,24 @@
   <body>
     <div id="root"></div>
 
+    <script>
+      // Fix para barra preta no Safari iOS
+      (function () {
+        function setViewportHeight() {
+          const vh = window.innerHeight * 0.01;
+          document.documentElement.style.setProperty("--vh", vh + "px");
+          document.body.style.minHeight = window.innerHeight + "px";
+        }
+
+        setViewportHeight();
+        window.addEventListener("resize", setViewportHeight);
+        window.addEventListener("orientationchange", setViewportHeight);
+
+        // Força atualização após um pequeno delay para garantir que a barra de navegação foi processada
+        setTimeout(setViewportHeight, 100);
+        setTimeout(setViewportHeight, 500);
+      })();
+    </script>
     <script type="text/babel">
       const { useState, useEffect, useCallback, useRef, useMemo } = React;
 
@@ -933,12 +1006,18 @@
           <>
             <div
               ref={cardContainerRef}
-              className="card-model-a rounded-none md:rounded-3xl p-4 md:p-8 space-y-[1.1rem] md:space-y-[1.65rem] bg-gradient-to-br from-black via-black to-purple-950/50 shadow-2xl border-0 md:border border-purple-600/20 backdrop-blur-sm flex flex-col justify-start pt-8 md:pt-12 pb-5 relative"
+              className="card-model-a rounded-none md:rounded-3xl p-4 md:p-8 space-y-[1.1rem] md:space-y-[1.65rem] bg-gradient-to-br from-black via-black to-purple-950/50 shadow-2xl border-0 md:border border-purple-600/20 backdrop-blur-sm flex flex-col justify-start pt-8 md:pt-12 relative"
             >
               <div
                 ref={overlayRef}
                 className="absolute top-0 left-0 right-0 bg-black/40 z-10 pointer-events-none"
               ></div>
+
+              {music && showMusicPlayer && (
+                <div className="relative z-20 max-w-md mx-auto mb-6 p-4">
+                  <DarkMusicPlayer track={music} />
+                </div>
+              )}
 
               {name && (
                 <div className="relative z-20 text-center px-4 md:px-0 mt-8">
@@ -1020,7 +1099,7 @@
                   style={{ marginTop: "50px", marginBottom: "50px" }}
                 >
                   <div className="relative">
-                    <span className="text-3xl sm:text-3xl md:text-4xl lg:text-5xl text-purple-300/60 absolute left-0 sm:left-0 md:-left-6 lg:-left-8 -top-4 sm:-top-6 font-serif">
+                    <span className="text-3xl sm:text-3xl md:text-4xl lg:text-5xl text-purple-300/60 absolute left-0 sm:left-5 md:-left-6 lg:-left-8 -top-4 sm:-top-6 font-serif">
                       "
                     </span>
                     <span className=" relative z-20 font-light tracking-wide hyphens-auto px-4 md:px-8 lg:px-12">
@@ -1033,12 +1112,22 @@
                 </blockquote>
               )}
 
+              {message && (
+                <p className="text-purple-300/70 text-sm md:text-base font-serif italic px-4 md:px-0 w-[90%] md:w-[40%] self-center text-right -mt-14 baixo">
+                  De João para Ana
+                </p>
+              )}
+
               {startDate && (
-                <div className="mt-3 relative z-20 pb-28 md:pb-20">
+                <div
+                  className="relative z-20 pb-12 md:pb-10"
+                  style={{ marginTop: "40px" }}
+                >
                   <RelationshipCounter startDate={startDate} theme="dark" />
                   <div className="text-center -mt-20 px-4">
                     <p className="text-gray-200 text-lg md:text-xl font-serif italic">
-                      Seu amor foi sempre muito mais do que eu sonhei pra mim!
+                      Seu amor foi sempre muito mais do que eu sonhei pra mim!{" "}
+                      <span className="text-purple-300">❤️</span>
                     </p>
                   </div>
                 </div>
@@ -1046,12 +1135,6 @@
 
               <MeteorHearts />
             </div>
-
-            {music && showMusicPlayer && (
-              <div className="max-w-md mx-auto music-player-fixed p-4 bg-gradient-to-t from-black/95 via-black/90 to-transparent">
-                <DarkMusicPlayer track={music} />
-              </div>
-            )}
           </>
         );
       }
@@ -1073,7 +1156,8 @@
             name: "Diego & Victor Hugo",
           },
           album: {
-            cover_small: "img/logo.png",
+            cover_small:
+              "https://akamai.sscdn.co/uploadfile/letras/fotos/3/9/3/c/393c1173985f0767b41943c0318008df.jpg",
           },
           preview: "https://cdns-preview-1.dzcdn.net/stream/c-1470102898-2.mp3",
         },
@@ -1081,50 +1165,76 @@
         showMusicPlayer: true,
       };
 
-      // Componente de Abertura de Presente
-      function GiftOpeningScreen({ onOpen }) {
-        const [isOpening, setIsOpening] = useState(false);
+      // Componente de Estrelas Piscando
+      function TwinklingStars() {
+        const [stars, setStars] = useState([]);
 
+        useEffect(() => {
+          const starCount = 50;
+          const newStars = Array.from({ length: starCount }, (_, i) => ({
+            id: i,
+            left: Math.random() * 100,
+            top: Math.random() * 100,
+            delay: Math.random() * 3,
+            duration: 1 + Math.random() * 2,
+          }));
+          setStars(newStars);
+        }, []);
+
+        return (
+          <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
+            {stars.map((star) => (
+              <div
+                key={star.id}
+                className="absolute w-1 h-1 bg-purple-300 rounded-full"
+                style={{
+                  left: `${star.left}%`,
+                  top: `${star.top}%`,
+                  animation: `twinkle ${star.duration}s ease-in-out infinite`,
+                  animationDelay: `${star.delay}s`,
+                  opacity: 0.15,
+                }}
+              />
+            ))}
+          </div>
+        );
+      }
+
+      // Componente de Abertura de Presente
+      function GiftOpeningScreen({ onOpen, isTransitioning }) {
         const handleOpen = () => {
-          if (isOpening) return;
-          setIsOpening(true);
-          setTimeout(() => {
-            onOpen();
-          }, 500);
+          if (isTransitioning) return;
+          onOpen();
         };
 
         return (
           <div
-            className={`min-h-screen bg-gradient-to-br from-black via-black to-purple-950/30 flex items-center justify-center transition-opacity duration-500 ${
-              isOpening ? "opacity-0" : "opacity-100"
+            className={`min-h-[100%] bg-gradient-to-br from-black via-black to-purple-950/30 flex items-center justify-center pb-10 relative transition-all duration-700 ease-in-out ${
+              isTransitioning
+                ? "opacity-0 scale-95 blur-sm"
+                : "opacity-100 scale-100 blur-0"
             }`}
             onClick={handleOpen}
-            style={{ cursor: isOpening ? "default" : "pointer" }}
           >
-            <div className="text-center px-4 flex flex-col items-center justify-center min-h-screen relative w-full">
+            <TwinklingStars />
+            <div className="text-center px-4 flex flex-col items-center justify-center relative w-full min-h-screen z-20">
               <div className="flex-1 flex flex-col items-center justify-center pb-24">
-                <div className="mb-8">
-                  <h2 className="text-3xl md:text-4xl font-bold text-purple-300 mb-4 font-serif">
+                <div className="mb-6">
+                  <h2 className="text-3xl md:text-4xl font-bold text-purple-300 mb-8 font-serif">
                     Você tem um presente!
                   </h2>
-                  <p className="text-purple-200 text-lg md:text-xl mb-8">
+                  <p className="text-purple-200 text-lg md:text-xl mb-6">
                     Toque para abrir
                   </p>
                 </div>
 
-                <div className="text-9xl md:text-[12rem] animate-pulse">🎁</div>
+                <div className="text-9xl md:text-[12rem] animate-pulse mb-16">
+                  🎁
+                </div>
 
-                <div className="mt-8 text-purple-300/60 text-sm md:text-base">
+                <div className="text-purple-300/60 text-sm md:text-base">
                   👆 Toque em qualquer lugar
                 </div>
-              </div>
-
-              <div className="absolute bottom-6 md:bottom-8 left-0 right-0 flex justify-center px-4">
-                <img
-                  src="img/logo.png"
-                  alt="Logo"
-                  className="max-w-[80px] md:max-w-[100px] h-auto opacity-80 hover:opacity-100 transition-opacity duration-300"
-                />
               </div>
             </div>
           </div>
@@ -1134,13 +1244,34 @@
       // Componente Demo
       function Demo() {
         const [isGiftOpened, setIsGiftOpened] = useState(false);
+        const [isTransitioning, setIsTransitioning] = useState(false);
+
+        const handleOpen = () => {
+          setIsTransitioning(true);
+          setTimeout(() => {
+            setIsGiftOpened(true);
+            setIsTransitioning(false);
+          }, 700);
+        };
 
         if (!isGiftOpened) {
-          return <GiftOpeningScreen onOpen={() => setIsGiftOpened(true)} />;
+          return (
+            <>
+              <GiftOpeningScreen
+                onOpen={handleOpen}
+                isTransitioning={isTransitioning}
+              />
+              {isTransitioning && (
+                <div className="fixed inset-0 bg-gradient-to-br from-black via-black to-purple-950/30 z-30 animate-fadeIn">
+                  <CardModelA {...demoData} />
+                </div>
+              )}
+            </>
+          );
         }
 
         return (
-          <div className="min-h-[100%] bg-gradient-to-br from-black via-black to-purple-950/30">
+          <div className="min-h-[100%] bg-gradient-to-br from-black via-black to-purple-950/30 animate-fadeIn">
             <CardModelA {...demoData} />
           </div>
         );
