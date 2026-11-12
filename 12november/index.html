@@ -52,8 +52,8 @@ const LIVRO = {
     { foto: 'fotos/15.jpg', texto: '“O que Deus ajuntou não o separe o homem.” — Marcos 10:9' }
   ],
 
-  // Cabine: 8 fotos, 4 em cada tira
-  cabine: ['fotos/01.jpg', 'fotos/04.jpg', 'fotos/07.jpg', 'fotos/13.jpg', 'fotos/02.jpg', 'fotos/09.jpg', 'fotos/14.jpg', 'fotos/11.jpg'],
+  // Cabine: 4 fotos, 2 em cada tira
+  cabine: ['fotos/04.jpg', 'fotos/07.jpg', 'fotos/14.jpg', 'fotos/01.jpg'],
 
   fraseJardim: '“Aparecem as flores na terra, o tempo de cantar chega.” — Cantares 2:12',
 
@@ -378,6 +378,11 @@ body.fechado #nav{opacity:0}
 .book{filter:none}
 .bloco{box-shadow:0 0 0 5px #14302a,0 0 0 6px rgba(216,180,106,.45),0 28px 46px rgba(0,0,0,.6)}
 .jar .flor img{filter:none}
+/* cabine com 4 fotos maiores */
+.cab .caixa{top:19cqw;bottom:9cqw}
+.cab .janela{gap:5cqw;padding:2cqw 1.5cqw}
+.cab .tira{width:21cqw;padding:1.3cqw 1.3cqw 4.5cqw;gap:1.3cqw}
+.cab .rodape{bottom:3.6cqw}
 </style>
 </head>
 <body class="fechado">
@@ -571,7 +576,7 @@ PAGS.push(pg => { pg.classList.add('bar');
 PAGS.push(pg => { pg.classList.add('cab');
   const tira = (fs, r) => h('div', { class: 'tira', style: `--r:${r}deg` }, fs.map(foto));
   const jan = h('div', { class: 'janela', role: 'button', 'aria-label': 'Revelar as fotos', onclick: () => { pg.classList.toggle('on'); if (pg.classList.contains('on')) sino([1046.5, 1568]); } },
-    tira(L.cabine.slice(0, 2), -1.5), tira(L.cabine.slice(2, 4), 1), tira(L.cabine.slice(4, 6), -1), tira(L.cabine.slice(6, 8), 1.5), h('div', { class: 'cort e' }), h('div', { class: 'cort d' }), h('div', { class: 'flash' }));
+    tira(L.cabine.slice(0, 2), -1.5), tira(L.cabine.slice(2, 4), 1.5), h('div', { class: 'cort e' }), h('div', { class: 'cort d' }), h('div', { class: 'flash' }));
   pg.append(cena('feira', 0), h('div', { class: 'caixa' }, h('div', { class: 'placa' }, T.cabine, h('small', { text: 'toque na cortina' })),
     h('div', { class: 'luzes' }, Array.from({ length: 9 }, () => h('i'))), jan), h('div', { class: 'rodape', text: 'Sorria. De novo.' })); fx(pg, 'bokeh', 12); });
 // 5 céu
