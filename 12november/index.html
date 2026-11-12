@@ -372,6 +372,12 @@ body.fechado #nav{opacity:0}
 @keyframes pulsa{50%{transform:scale(1.08)}}
 .bilhete .tampa{font-size:0}
 .bilhete .tampa::after{content:"";width:11cqw;height:11cqw;background:url(arte/selo.png) center/contain no-repeat;filter:drop-shadow(0 .5cqw 1cqw rgba(0,0,0,.45))}
+/* só as faces da página aberta são desenhadas (evita vazamento entre páginas no celular) */
+.face{visibility:hidden}
+.face.mostra{visibility:visible}
+.book{filter:none}
+.bloco{box-shadow:0 0 0 5px #14302a,0 0 0 6px rgba(216,180,106,.45),0 28px 46px rgba(0,0,0,.6)}
+.jar .flor img{filter:none}
 </style>
 </head>
 <body class="fechado">
@@ -653,14 +659,21 @@ for (let i = 0; i < N; i++) {
   });
   leaves.push(leaf); book.append(leaf);
 }
-const uma = matchMedia('(max-aspect-ratio: 1/1)'); let p = 0;
+const uma = matchMedia('(max-aspect-ratio: 1/1)'); let p = 0, geracao = 0;
 function mostra() {
   const f = Math.ceil(p / 2); let mudou = false;
   leaves.forEach((l, i) => { const v = i < f; if (l.classList.contains('flipped') === v) return;
     l.style.zIndex = 60 + (v ? i : N - i); l.classList.toggle('flipped', v); l.classList.add('virando'); mudou = true;
     setTimeout(() => { l.style.zIndex = l.classList.contains('flipped') ? i + 1 : N - i; l.classList.remove('virando'); }, 900); });
   if (mudou && !document.body.classList.contains('fechado')) somPagina();
-  pgs.forEach((g2, n) => g2.classList.toggle('vis', n === 2 * f - 1 || n === 2 * f));
+  const atual = n => n === 2 * f - 1 || n === 2 * f;
+  pgs.forEach((g2, n) => g2.classList.toggle('vis', atual(n)));
+  const ger = ++geracao, faces = pgs.map(g2 => g2.parentElement);
+  faces.forEach((fc, n) => { if (atual(n)) fc.classList.add('mostra'); });
+  // no meio da virada, some a face que ficou de costas em cada folha
+  setTimeout(() => { if (ger !== geracao) return; leaves.forEach((l, i) => faces[2 * i + (l.classList.contains('flipped') ? 0 : 1)].classList.remove('mostra')); }, mudou ? 340 : 0);
+  // no fim, ficam só as duas páginas abertas
+  setTimeout(() => { if (ger !== geracao) return; faces.forEach((fc, n) => fc.classList.toggle('mostra', atual(n))); }, mudou ? 920 : 0);
   book.classList.toggle('temE', f > 0); book.classList.toggle('temD', f < N);
   const d = uma.matches ? (p % 2 ? 25 : -25) : f === 0 ? -25 : f === N ? 25 : 0;
   book.style.transform = `translateX(${d}%)`;
